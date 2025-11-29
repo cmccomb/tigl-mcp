@@ -41,6 +41,7 @@ warn_return_any = true
 warn_unused_ignores = true
 warn_unused_configs = true
 strict = true
+exclude = ["^build/"]
 mypy_path = "src"
 
 [tool.pytest.ini_options]
