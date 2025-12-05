@@ -50,5 +50,5 @@ mypy_path = "src"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=tigl_mcp --cov=tigl_mcp_server --cov-report=term-missing"
+addopts = "--cov=tigl_mcp_server --cov-report=term-missing"
 pythonpath = ["src"]

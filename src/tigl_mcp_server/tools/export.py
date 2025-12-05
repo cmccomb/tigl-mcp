@@ -6,7 +6,7 @@ import base64
 from collections.abc import Callable
 from typing import Literal
 
-from tigl_mcp.tools import ToolDefinition, ToolParameters
+from tigl_mcp_server.tooling import ToolDefinition, ToolParameters
 from tigl_mcp_server.cpacs import ComponentDefinition, TiglConfiguration
 from tigl_mcp_server.errors import MCPError, raise_mcp_error
 from tigl_mcp_server.session_manager import SessionManager

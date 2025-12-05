@@ -7,7 +7,7 @@ from typing import Literal
 
 import tigl3
 import tixi3
-from tigl_mcp.tools import ToolDefinition, ToolParameters
+from tigl_mcp_server.tooling import ToolDefinition, ToolParameters
 from tigl_mcp_server.errors import MCPError, raise_mcp_error
 from tigl_mcp_server.session_manager import SessionManager
 
