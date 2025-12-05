@@ -86,7 +86,7 @@ def test_export_component_mesh_rejects_unsupported_su2(
                 "component_uid": "W1",
                 "format": "su2",
             }
-    )
+        )
 
     assert "format 'su2' not supported" in str(excinfo.value)
     assert "W1" in str(excinfo.value)

@@ -66,7 +66,9 @@ def _ensure_export_supported(
     supported_native_formats: set[MeshFormat] = {"stl", "vtk", "collada"}
     if mesh_format in supported_native_formats:
         return
-    if mesh_format == "su2" and callable(getattr(tigl_handle, "exportComponentSTL", None)):
+    if mesh_format == "su2" and callable(
+        getattr(tigl_handle, "exportComponentSTL", None)
+    ):
         return
 
     _raise_unsupported_format(mesh_format, component_uid)
