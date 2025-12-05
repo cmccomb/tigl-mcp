@@ -44,6 +44,17 @@ def _coerce_mesh_bytes(raw_mesh: object, format_label: str) -> bytes:
     )
 
 
+def _raise_unsupported_format(mesh_format: MeshFormat, component_uid: str) -> None:
+    """Raise a standardized error for unsupported mesh formats."""
+    raise_mcp_error(
+        "MeshExportError",
+        (
+            "Mesh export failed: format "
+            f"'{mesh_format}' not supported for component {component_uid}."
+        ),
+    )
+
+
 def _ensure_export_supported(
     tigl_handle: TiglConfiguration, mesh_format: MeshFormat, component_uid: str
 ) -> None:
@@ -61,10 +72,7 @@ def _ensure_export_supported(
     if mesh_format == "su2" and _has_exporter():
         return
 
-    raise_mcp_error(
-        "MeshExportError",
-        f"Mesh export failed: format '{mesh_format}' not supported for component {component_uid}.",
-    )
+    _raise_unsupported_format(mesh_format, component_uid)
 
 
 def _export_su2_via_tigl(
@@ -118,16 +126,13 @@ def _synthetic_mesh_bytes(
         ).encode("ascii")
     if mesh_format == "collada":
         return (
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            '<?xml version="1.0" encoding="UTF-8"?>'
             "<COLLADA><asset/><library_geometries>"
-            f"<geometry id=\"{component.uid}\" name=\"{component.uid}\"/>"
+            f'<geometry id="{component.uid}" name="{component.uid}"/>'
             "</library_geometries></COLLADA>"
-        ).encode("utf-8")
+        ).encode()
 
-    raise_mcp_error(
-        "MeshExportError",
-        f"Mesh export failed: format '{mesh_format}' not supported for component {component.uid}.",
-    )
+    _raise_unsupported_format(mesh_format, component.uid)
 
 
 def _export_mesh_bytes(
@@ -140,10 +145,7 @@ def _export_mesh_bytes(
         tigl_mesh = _export_su2_via_tigl(tigl_handle, component)
         if tigl_mesh is not None:
             return tigl_mesh
-        raise_mcp_error(
-            "MeshExportError",
-            f"Mesh export failed: format '{mesh_format}' not supported for component {component.uid}.",
-        )
+        _raise_unsupported_format(mesh_format, component.uid)
 
     return _synthetic_mesh_bytes(mesh_format, component)
 
@@ -162,16 +164,10 @@ def _validate_mesh_bytes(
 ) -> bytes:
     """Ensure exported mesh payloads are real, non-empty bytes."""
     if mesh_bytes is None or len(mesh_bytes) == 0:
-        raise_mcp_error(
-            "MeshExportError",
-            f"Mesh export failed: format '{mesh_format}' not supported for component {component.uid}.",
-        )
+        _raise_unsupported_format(mesh_format, component.uid)
 
     if _looks_like_handle(mesh_bytes):
-        raise_mcp_error(
-            "MeshExportError",
-            f"Mesh export failed: format '{mesh_format}' not supported for component {component.uid}.",
-        )
+        _raise_unsupported_format(mesh_format, component.uid)
 
     return mesh_bytes
 
