@@ -6,6 +6,7 @@ import base64
 import tempfile
 import types
 from collections.abc import Iterator, Sized
+from importlib import import_module
 from typing import Any, Literal, NoReturn
 
 from tigl_mcp_server.cpacs import ComponentDefinition, TiglConfiguration
@@ -77,9 +78,7 @@ def _export_su2_via_tigl(
 ) -> bytes:
     """Export SU2 mesh bytes using TiGL STL export combined with meshio conversion."""
     try:
-        import meshio  # type: ignore[import-not-found]
-
-        meshio_module: Any = meshio
+        meshio_module: Any = import_module("meshio")
         stl_bytes = _coerce_mesh_bytes(
             tigl_handle.exportComponentSTL(component.uid), "STL"  # type: ignore[attr-defined]
         )
