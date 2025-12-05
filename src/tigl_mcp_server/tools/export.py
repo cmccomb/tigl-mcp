@@ -5,10 +5,8 @@ from __future__ import annotations
 import base64
 import tempfile
 import types
-from collections.abc import Iterator
-from typing import Literal, NoReturn
-
-import meshio
+from collections.abc import Iterator, Sized
+from typing import Any, Literal, NoReturn
 
 from tigl_mcp_server.cpacs import ComponentDefinition, TiglConfiguration
 from tigl_mcp_server.errors import MCPError, raise_mcp_error
@@ -79,6 +77,9 @@ def _export_su2_via_tigl(
 ) -> bytes:
     """Export SU2 mesh bytes using TiGL STL export combined with meshio conversion."""
     try:
+        import meshio  # type: ignore[import-not-found]
+
+        meshio_module: Any = meshio
         stl_bytes = _coerce_mesh_bytes(
             tigl_handle.exportComponentSTL(component.uid), "STL"  # type: ignore[attr-defined]
         )
@@ -100,10 +101,10 @@ def _export_su2_via_tigl(
         with tempfile.NamedTemporaryFile(suffix=".stl") as stl_file:
             stl_file.write(stl_bytes)
             stl_file.flush()
-            mesh = meshio.read(stl_file.name, file_format="stl")
+            mesh = meshio_module.read(stl_file.name, file_format="stl")
 
         class _SU2Cell:
-            def __init__(self, cell_type: str, data: object) -> None:
+            def __init__(self, cell_type: str, data: Sized) -> None:
                 self.type = cell_type
                 self.data = data
 
@@ -120,7 +121,7 @@ def _export_su2_via_tigl(
         )
 
         with tempfile.NamedTemporaryFile(suffix=".su2") as su2_file:
-            meshio.write(su2_file.name, mesh_to_write, file_format="su2")
+            meshio_module.write(su2_file.name, mesh_to_write, file_format="su2")
             su2_file.flush()
             su2_file.seek(0)
             su2_bytes = su2_file.read()
