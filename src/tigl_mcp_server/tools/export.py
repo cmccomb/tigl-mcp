@@ -62,12 +62,8 @@ def _ensure_export_supported(
     tigl_handle: TiglConfiguration, mesh_format: MeshFormat, component_uid: str
 ) -> None:
     """Verify requested mesh export format is supported and fail clearly when not."""
-    supported_native_formats: set[MeshFormat] = {"stl", "vtk", "collada"}
+    supported_native_formats: set[MeshFormat] = {"stl", "vtk", "collada", "su2"}
     if mesh_format in supported_native_formats:
-        return
-    if mesh_format == "su2" and callable(
-        getattr(tigl_handle, "exportComponentSTL", None)
-    ):
         return
 
     _raise_unsupported_format(mesh_format, component_uid)
